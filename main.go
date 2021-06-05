@@ -10,10 +10,8 @@ import (
 
 func main() {
 	args := os.Args[1:]
-	if len(args) == 1 {
-		if args[0] == "-h" || args[0] == "--help" {
-			printHelp(os.Stdout)
-		}
+	if len(args) == 1 && (args[0] == "-h" || args[0] == "--help") {
+		printHelp(os.Stdout)
 	} else if len(args) == 1 && args[0] == "-i" {
 		handleInput(os.Stdin, os.Stdout)
 	} else if len(args) == 2 && args[0] == "-f" { // -f filename
