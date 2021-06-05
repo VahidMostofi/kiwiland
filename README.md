@@ -43,7 +43,7 @@ go build
   ```
   ./kiwiland -i
   ```
-
+  [screenshot of interactive mode](https://raw.githubusercontent.com/VahidMostofi/kiwiland/master/kiwkiland.png)
 - To pass a file use: (make sure the last command has a new line at the end)
   ```
   ./kiwiland -f <filename>
