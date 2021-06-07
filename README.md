@@ -1,5 +1,15 @@
-# Kiwiland railway assistant
-## To run with original example:
+# Kiwiland railway assistant <!-- omit in toc -->
+
+- [To run with original example](#to-run-with-original-example)
+- [How to build and run](#how-to-build-and-run)
+- [How to use](#how-to-use)
+  - [Command Line Interface](#command-line-interface)
+  - [Changing Input/Output mediums](#changing-inputoutput-mediums)
+- [Problem Statement/ Initial Requirements](#problem-statement-initial-requirements)
+  - [Input features/assumptions](#input-featuresassumptions)
+  - [Primary Requirements](#primary-requirements)
+
+## To run with original example
 ```
 go mod download
 go build
@@ -39,6 +49,7 @@ go build
   ```
 
 ## How to use
+### Command Line Interface
 - Use in interactive mode:
   ```
   ./kiwiland -i
@@ -74,7 +85,9 @@ go build
   $> kiwiland -f sample-input-file.txt
   ```
 
-## Problem Statement
+### Changing Input/Output mediums
+The function that handles input and output works with `io.Reader` and `io.Writer`, so adding other sources for reading input from and writing output to would be easy.
+## Problem Statement/ Initial Requirements
 ### Input features/assumptions
  - The graph is a directed, weighted graph.
 
