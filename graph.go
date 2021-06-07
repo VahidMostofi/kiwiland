@@ -230,16 +230,6 @@ func (g *Graph) shortestPath(src int, target int) (int, []int) {
 		}
 		iter++
 		for v, w := range g.weights[u] {
-			// if src == target && v == target {
-			// 	if w <= 0 {
-			// 		continue
-			// 	}
-			// 	if distance[v] > distance[u]+w && {
-			// 		distance[v] = distance[u] + w
-			// 		parent[v] = u
-			// 		heap.Push(pq, NewItem(v, -1*distance[v]))
-			// 	}
-			// } else {
 			if visited[v] || w <= 0 {
 				continue
 			}
