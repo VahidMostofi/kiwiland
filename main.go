@@ -20,6 +20,8 @@ func main() {
 			panic(err)
 		}
 		handleInput(f, os.Stdout)
+	} else {
+		printHelp(os.Stdout)
 	}
 }
 
@@ -30,32 +32,38 @@ const AllTripsCommandPrefix = "all trips"
 
 var reader *bufio.Reader
 
-func readSingleLine() string {
+func readSingleLine() (string, error) {
 	line, err := reader.ReadString('\n')
 	if err != nil {
 		if err == io.EOF {
-			return "exit"
+			return "exit", nil
 		}
-		panic(err)
+		return "", err
 	}
 	line = strings.Replace(line, "\n", "", 1)
 	line = strings.Trim(line, " ")
-	return line
+	return line, nil
 }
 
-func handleInput(r io.Reader, w io.Writer) {
+func handleInput(r io.Reader, w io.Writer) error {
 	reader = bufio.NewReader(r)
-	inputLine := readSingleLine()
+	inputLine, err := readSingleLine()
+	if err != nil {
+		return err
+	}
 	g, err := NewGraphFromReader(strings.NewReader(inputLine))
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	for {
 		var r int
-		line := readSingleLine()
+		line, err := readSingleLine()
+		if err != nil {
+			return err
+		}
 		if line == "exit" {
-			return
+			return nil
 		} else if strings.HasPrefix(line, DistanceCommanPrefix) {
 			r = handleDistanceCommand(w, line, g)
 		} else if strings.HasPrefix(line, ShortestPathCommanPrefix) {

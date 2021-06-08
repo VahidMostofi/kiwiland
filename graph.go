@@ -89,7 +89,7 @@ func NewGraphFromReader(r io.Reader) (*Graph, error) {
 		wStr := split[2:]
 		w, err := strconv.Atoi(wStr)
 		if err != nil {
-			panic(err)
+			return nil, fmt.Errorf("can't parse %s as a edge weight.", wStr)
 		}
 
 		// track nodes, if source or destination are new, add them to the map
