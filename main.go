@@ -8,6 +8,11 @@ import (
 	"strings"
 )
 
+const DistanceCommanPrefix = "distance of route"
+const ShortestPathCommanPrefix = "shortest route"
+const AllRoutesCommandPrefix = "all routes"
+const AllTripsCommandPrefix = "all trips"
+
 func main() {
 	args := os.Args[1:]
 	if len(args) == 1 && (args[0] == "-h" || args[0] == "--help") {
@@ -25,29 +30,11 @@ func main() {
 	}
 }
 
-const DistanceCommanPrefix = "distance of route"
-const ShortestPathCommanPrefix = "shortest route"
-const AllRoutesCommandPrefix = "all routes"
-const AllTripsCommandPrefix = "all trips"
-
-var reader *bufio.Reader
-
-func readSingleLine() (string, error) {
-	line, err := reader.ReadString('\n')
-	if err != nil {
-		if err == io.EOF {
-			return "exit", nil
-		}
-		return "", err
-	}
-	line = strings.Replace(line, "\n", "", 1)
-	line = strings.Trim(line, " ")
-	return line, nil
-}
-
+// handleInput read input from r io.Reader and writes
+// outputs to w io.Writer.
 func handleInput(r io.Reader, w io.Writer) error {
-	reader = bufio.NewReader(r)
-	inputLine, err := readSingleLine()
+	reader := bufio.NewReader(r)
+	inputLine, err := readSingleLine(reader)
 	if err != nil {
 		return err
 	}
@@ -58,7 +45,7 @@ func handleInput(r io.Reader, w io.Writer) error {
 
 	for {
 		var r int
-		line, err := readSingleLine()
+		line, err := readSingleLine(reader)
 		if err != nil {
 			return err
 		}
@@ -82,6 +69,20 @@ func handleInput(r io.Reader, w io.Writer) error {
 			fmt.Fprintln(w, "error in running command, if you need help, type help")
 		}
 	}
+}
+
+// readSingleLine read up to '\n' or io.EOF and returns the string
+func readSingleLine(reader *bufio.Reader) (string, error) {
+	line, err := reader.ReadString('\n')
+	if err != nil {
+		if err == io.EOF {
+			return "exit", nil
+		}
+		return "", err
+	}
+	line = strings.Replace(line, "\n", "", 1)
+	line = strings.Trim(line, " ")
+	return line, nil
 }
 
 // all trips X Y = w
