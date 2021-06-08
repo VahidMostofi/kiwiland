@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -73,7 +74,64 @@ func TestGraphFunctions(t *testing.T) {
 		allRoutesLengthLessThanTCS: []allRoutesLessThanLengthTestCase{{"C", "C", 30, 7, nil}},
 	}
 
+	tc2 := graphTestCase{
+		name:                       "test-case-2",
+		input:                      "AB1, BD2, BC10, DC3, CA4, FG2, GF10, GE3, EF4",
+		nodeCount:                  7,
+		edgeCount:                  9,
+		shortestPathTCS:            []shortestPathTestCase{{"A", "C", 6, nil}, {"C", "A", 4, nil}, {"A", "F", -1, ErrNoSuchRoute}, {"F", "F", 9, nil}, {"G", "F", 7, nil}},
+		routeLengthTCS:             []routeLengthTestCase{{"A-B-C", 11, nil}, {"A-B-F", -1, ErrNoSuchRoute}, {"G-F", 10, nil}, {"G-E-F", 7, nil}},
+		allRoutesSizeTCS:           []allRoutesSize{{"A", "A", 5, -1, 2, nil}, {"A", "F", 10, -1, 0, nil}, {"F", "G", -1, 5, 1, nil}, {"F", "G", 6, -1, 4, nil}},
+		allRoutesLengthLessThanTCS: []allRoutesLessThanLengthTestCase{{"A", "A", 15, 1, nil}, {"A", "A", 10, 0, nil}, {"A", "F", 10, 0, nil}, {"A", "C", 12, 2, nil}},
+	}
+
 	graphTester(t, tc)
+	graphTester(t, tc2)
+}
+
+func TestCompleteGraph(t *testing.T) {
+	k := 5
+	nodes := []string{"A", "B", "C", "D", "E"}
+	l := 1
+	input := ""
+	for i := 0; i < k; i++ {
+		for j := 0; j < k; j++ {
+			if i != j {
+				input += nodes[i] + nodes[j] + strconv.Itoa(l) + ", "
+			}
+		}
+	}
+	input = input[:len(input)-2]
+	gtc := graphTestCase{
+		name:                       "complete-graph-" + strconv.Itoa(k),
+		input:                      input,
+		nodeCount:                  k,
+		edgeCount:                  (k * (k - 1)),
+		shortestPathTCS:            make([]shortestPathTestCase, 0),
+		routeLengthTCS:             make([]routeLengthTestCase, 0),
+		allRoutesSizeTCS:           make([]allRoutesSize, 0),
+		allRoutesLengthLessThanTCS: make([]allRoutesLessThanLengthTestCase, 0),
+	}
+
+	for i := 0; i < k; i++ {
+		for j := 0; j < k; j++ {
+			if i == j {
+				gtc.shortestPathTCS = append(gtc.shortestPathTCS, shortestPathTestCase{nodes[i], nodes[j], l * 2, nil})
+			} else {
+				gtc.shortestPathTCS = append(gtc.shortestPathTCS, shortestPathTestCase{nodes[i], nodes[j], l, nil})
+			}
+		}
+	}
+
+	for i := 0; i < k; i++ {
+		for j := 0; j < k; j++ {
+			if i != j {
+				gtc.allRoutesSizeTCS = append(gtc.allRoutesSizeTCS, allRoutesSize{nodes[i], nodes[j], 52, 5, 4096, nil})
+			}
+		}
+	}
+
+	graphTester(t, gtc)
 }
 
 func graphTester(t *testing.T, tc graphTestCase) {
@@ -89,7 +147,7 @@ func graphTester(t *testing.T, tc graphTestCase) {
 		d, err := g.GetMinDistanceBetweenNodes(sp.source, sp.target)
 		if sp.err == nil {
 			assert.NoError(t, err, fmt.Sprintf("min distance: %d", i))
-			assert.Equal(t, sp.length, d, fmt.Sprintf("min distance: %d", i))
+			assert.Equal(t, sp.length, d, fmt.Sprintf("min distance: %d; %v", i, sp))
 		} else {
 			assert.EqualError(t, sp.err, err.Error())
 		}
@@ -99,7 +157,7 @@ func graphTester(t *testing.T, tc graphTestCase) {
 		d, err := g.GetLengthOfRoute(rl.route)
 		if rl.err == nil {
 			assert.NoError(t, err, fmt.Sprintf("route length: %d", i))
-			assert.Equal(t, rl.length, d, fmt.Sprintf("route length: %d", i))
+			assert.Equal(t, rl.length, d, fmt.Sprintf("route length: %d; %v", i, rl))
 		} else {
 			assert.EqualError(t, rl.err, err.Error())
 		}

@@ -129,7 +129,10 @@ func (g *Graph) GetMinDistanceBetweenNodes(src string, destination string) (int,
 		return -1, ErrNoNodeFound
 	}
 
-	length, _ := g.shortestPath(sourceNode, destinationNode)
+	length, _, err := g.shortestPath(sourceNode, destinationNode)
+	if err != nil {
+		return -1, err
+	}
 	return length, nil
 }
 
@@ -200,7 +203,7 @@ func (g *Graph) getLengthOfRouteInts(route []int) (int, error) {
 // shortestPath finds the shortest path between two nodes using Dijkstra
 // algorithm
 // src: https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
-func (g *Graph) shortestPath(src int, target int) (int, []int) {
+func (g *Graph) shortestPath(src int, target int) (int, []int, error) {
 	const infinity = math.MaxInt32
 	pq := new(PriorityQueue)
 	heap.Init(pq)
@@ -246,6 +249,10 @@ func (g *Graph) shortestPath(src int, target int) (int, []int) {
 		}
 	}
 
+	if distance[target] == infinity {
+		return -1, nil, ErrNoSuchRoute
+	}
+
 	path := make([]int, target)
 	p := parent[target]
 	for p != -1 {
@@ -255,7 +262,7 @@ func (g *Graph) shortestPath(src int, target int) (int, []int) {
 			break
 		}
 	}
-	return distance[target], path
+	return distance[target], path, nil
 }
 
 // GetAllRoutesWithExactSize finds all the Routes between source and target that
