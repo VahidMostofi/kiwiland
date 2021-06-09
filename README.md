@@ -11,33 +11,32 @@
 
 ## To run with original example
 ```
-go mod download
-go build
+script/build
 ./kiwiland -f samples/original.txt
 ```
 
 ## How to build and run
 - ### How to install dependencies
   ```
-  go mod download
+  script/bootstrap
   ```
 
 - ### How to build
   ```
-  go build
+  script/build
   ```
 - ### How to test
   ```
-  go test
+  script/test
   ```
 - ### How to run
   After build:
   ```
-  ./kiwilan
+  ./kiwiland
   ```
   or 
   ```
-  ./kiwilan -h
+  ./kiwiland -h
   ```
   Without build:
   ```
